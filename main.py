@@ -12,6 +12,8 @@ import numpy as np
 from phue import Bridge
 import math
 import argparse
+import sys
+import time
 from typing import Optional, Tuple
 
 
@@ -80,6 +82,8 @@ class HueController:
         self.bridge = Bridge(bridge_ip)
         self.light_ids = light_ids
         self.light_names = {}  # Store light names for display
+        self.last_brightness = None  # Track last brightness to avoid redundant updates
+        self.last_update_time = 0  # Track last update time for rate limiting
         self._connect()
         self._load_light_names()
         
@@ -110,22 +114,36 @@ class HueController:
         """Get display name for a light (returns name if available, otherwise returns ID)."""
         return self.light_names.get(str(light_id_or_name), str(light_id_or_name))
             
-    def set_brightness(self, brightness: int):
+    def set_brightness(self, brightness: int, min_update_interval: float = 0.1):
         """
         Set brightness for all configured lights.
         
         Args:
             brightness: Brightness value (1-254, where 1 is minimum, 254 is maximum)
+            min_update_interval: Minimum time (seconds) between updates to avoid spamming the bridge
         """
         # Clamp brightness to valid range
         brightness = max(1, min(254, int(brightness)))
         
+        # Rate limiting: only update if brightness changed or enough time has passed
+        current_time = time.time()
+        if (self.last_brightness == brightness and 
+            current_time - self.last_update_time < min_update_interval):
+            return brightness
+        
+        # Update only if brightness changed significantly (avoid jitter)
+        if self.last_brightness is not None and abs(self.last_brightness - brightness) < 2:
+            return brightness
+        
         for light_id in self.light_ids:
             try:
-                self.bridge.set_light(light_id, 'bri', brightness)
+                # First, ensure the light is turned on (brightness can't be set when light is off)
+                self.bridge.set_light(light_id, {'on': True, 'bri': brightness})
             except Exception as e:
                 print(f"Error setting brightness for light {light_id}: {e}")
         
+        self.last_brightness = brightness
+        self.last_update_time = current_time
         return brightness
 
 
@@ -165,7 +183,7 @@ class GestureBrightnessMapper:
         return brightness
 
 
-def list_available_lights(bridge_ip: str):
+def list_available_lights(bridge_ip: str="192.168.1.2"):
     """List all available lights with their IDs and names."""
     try:
         b = Bridge(bridge_ip)
@@ -199,6 +217,7 @@ def main():
         '--bridge-ip',
         type=str,
         required=True,
+        default='192.168.1.2',
         help='IP address of your Philips Hue Bridge'
     )
     parser.add_argument(
@@ -251,11 +270,45 @@ def main():
     
     # Initialize camera
     print(f"Opening camera {args.camera}...")
-    cap = cv2.VideoCapture(args.camera)
+    
+    # Use appropriate backend for the platform
+    if sys.platform.startswith('linux'):
+        # On Linux/WSL, use V4L2 backend explicitly for better USB passthrough support
+        cap = cv2.VideoCapture(args.camera, cv2.CAP_V4L2)
+    elif sys.platform.startswith('win'):
+        # On Windows, use DirectShow for better USB camera support
+        cap = cv2.VideoCapture(args.camera, cv2.CAP_DSHOW)
+    else:
+        cap = cv2.VideoCapture(args.camera)
     
     if not cap.isOpened():
         print(f"Error: Could not open camera {args.camera}")
         return
+    
+    # Configure camera for USB passthrough (important for WSL)
+    if sys.platform.startswith('linux'):
+        cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)  # Reduce buffer to avoid stale frames
+        # Set a reasonable resolution (some cameras need this)
+        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+        cap.set(cv2.CAP_PROP_FPS, 30)
+    
+    # Get camera properties
+    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    fps = cap.get(cv2.CAP_PROP_FPS)
+    print(f"Camera resolution: {width}x{height} @ {fps:.2f} FPS")
+    
+    # Warm-up: Read a few frames to initialize the camera stream
+    print("Initializing camera stream...")
+    for i in range(5):
+        ret, frame = cap.read()
+        if ret:
+            print(f"  Frame {i+1}/5: OK")
+            break
+        time.sleep(0.2)
+    else:
+        print("  Warning: Could not read initial frames, continuing anyway...")
     
     print("\n" + "="*60)
     print("Hue Hand Control is running!")
@@ -268,13 +321,34 @@ def main():
     
     # For dynamic calibration
     observed_distances = []
+    frame_timeout_count = 0
+    max_timeout_count = 10  # Allow some timeouts before giving up
     
     try:
         while True:
             ret, frame = cap.read()
             if not ret:
-                print("Error: Could not read frame from camera")
-                break
+                frame_timeout_count += 1
+                if frame_timeout_count > max_timeout_count:
+                    print("Error: Could not read frame from camera after multiple attempts")
+                    break
+                # Try to reinitialize the camera
+                if frame_timeout_count == 5:
+                    print("Warning: Frame read timeout, attempting to reinitialize camera...")
+                    cap.release()
+                    time.sleep(0.5)
+                    if sys.platform.startswith('linux'):
+                        cap = cv2.VideoCapture(args.camera, cv2.CAP_V4L2)
+                        cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+                    elif sys.platform.startswith('win'):
+                        cap = cv2.VideoCapture(args.camera, cv2.CAP_DSHOW)
+                    else:
+                        cap = cv2.VideoCapture(args.camera)
+                time.sleep(0.1)
+                continue
+            
+            # Reset timeout counter on successful read
+            frame_timeout_count = 0
             
             # Flip frame horizontally for mirror effect
             frame = cv2.flip(frame, 1)

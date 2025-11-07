@@ -16,6 +16,7 @@ from phue import Bridge
 import math
 import argparse
 import sys
+import time
 from typing import Optional, Tuple
 
 # Import shared classes from main.py
@@ -82,13 +83,14 @@ Tips for Quest 2:
         '--bridge-ip',
         type=str,
         required=True,
+        default='192.168.1.2',
         help='IP address of your Philips Hue Bridge'
     )
     parser.add_argument(
         '--lights',
         type=str,
         nargs='+',
-        default=['1'],
+        default=['4'],
         help='Light IDs or names to control (e.g., --lights 1 2 3 or --lights "Living Room" Bedroom)'
     )
     parser.add_argument(
@@ -154,7 +156,12 @@ Tips for Quest 2:
     
     # Initialize Quest 2 camera
     print(f"\nOpening Quest 2 camera (index {args.camera})...")
-    cap = cv2.VideoCapture(args.camera)
+    
+    # On Linux/WSL, use V4L2 backend explicitly for better USB passthrough support
+    if sys.platform.startswith('linux'):
+        cap = cv2.VideoCapture(args.camera, cv2.CAP_V4L2)
+    else:
+        cap = cv2.VideoCapture(args.camera)
     
     if not cap.isOpened():
         print(f"Error: Could not open camera {args.camera}")
@@ -164,11 +171,30 @@ Tips for Quest 2:
         print("  3. Try different camera indices: --camera 0, --camera 1, --camera 2")
         sys.exit(1)
     
+    # Configure camera for USB passthrough (important for WSL)
+    if sys.platform.startswith('linux'):
+        cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)  # Reduce buffer to avoid stale frames
+        # Set a reasonable resolution (some cameras need this)
+        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+        cap.set(cv2.CAP_PROP_FPS, 30)
+    
     # Get camera properties
     width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     fps = cap.get(cv2.CAP_PROP_FPS)
     print(f"Camera resolution: {width}x{height} @ {fps:.2f} FPS")
+    
+    # Warm-up: Read a few frames to initialize the camera stream
+    print("Initializing camera stream...")
+    for i in range(5):
+        ret, frame = cap.read()
+        if ret:
+            print(f"  Frame {i+1}/5: OK")
+            break
+        time.sleep(0.2)
+    else:
+        print("  Warning: Could not read initial frames, continuing anyway...")
     
     print("\n" + "="*60)
     print("Hue Hand Control - Quest 2 Mode")
@@ -185,14 +211,33 @@ Tips for Quest 2:
     
     # For dynamic calibration
     observed_distances = []
+    frame_timeout_count = 0
+    max_timeout_count = 10  # Allow some timeouts before giving up
     
     try:
         while True:
             ret, frame = cap.read()
             if not ret:
-                print("Error: Could not read frame from Quest 2 camera")
-                print("Make sure Quest 2 is still connected and Quest Link/Air Link is active.")
-                break
+                frame_timeout_count += 1
+                if frame_timeout_count > max_timeout_count:
+                    print("Error: Could not read frame from Quest 2 camera after multiple attempts")
+                    print("Make sure Quest 2 is still connected and Quest Link/Air Link is active.")
+                    break
+                # Try to reinitialize the camera
+                if frame_timeout_count == 5:
+                    print("Warning: Frame read timeout, attempting to reinitialize camera...")
+                    cap.release()
+                    time.sleep(0.5)
+                    if sys.platform.startswith('linux'):
+                        cap = cv2.VideoCapture(args.camera, cv2.CAP_V4L2)
+                        cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+                    else:
+                        cap = cv2.VideoCapture(args.camera)
+                time.sleep(0.1)
+                continue
+            
+            # Reset timeout counter on successful read
+            frame_timeout_count = 0
             
             # Quest 2 passthrough may already be mirrored, but we'll flip it for consistency
             # Comment out if the image appears backwards
