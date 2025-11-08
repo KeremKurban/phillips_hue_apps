@@ -82,10 +82,12 @@ class HueController:
         self.bridge = Bridge(bridge_ip)
         self.light_ids = light_ids
         self.light_names = {}  # Store light names for display
+        self.light_objects = []  # Store Light objects for direct control
         self.last_brightness = None  # Track last brightness to avoid redundant updates
         self.last_update_time = 0  # Track last update time for rate limiting
         self._connect()
         self._load_light_names()
+        self._load_light_objects()
         
     def _connect(self):
         """Connect to the Hue Bridge (press button on first run)."""
@@ -109,6 +111,25 @@ class HueController:
                 self.light_names[light_info['name']] = light_info['name']
         except Exception as e:
             print(f"Warning: Could not load light names: {e}")
+    
+    def _load_light_objects(self):
+        """Load Light objects for direct control."""
+        self.light_objects = []
+        for light_id in self.light_ids:
+            try:
+                # Bridge can be accessed like a dict: bridge[light_id] or bridge['name']
+                light_obj = self.bridge[light_id]
+                self.light_objects.append(light_obj)
+                print(f"Loaded light object: {light_obj.name} (ID: {light_id})")
+            except Exception as e:
+                print(f"Warning: Could not load light object for {light_id}: {e}")
+    
+    def _is_light_reachable(self, light_obj):
+        """Check if a light is reachable by the bridge."""
+        try:
+            return light_obj.reachable
+        except Exception:
+            return False
     
     def get_light_display_name(self, light_id_or_name):
         """Get display name for a light (returns name if available, otherwise returns ID)."""
@@ -135,12 +156,26 @@ class HueController:
         if self.last_brightness is not None and abs(self.last_brightness - brightness) < 2:
             return brightness
         
-        for light_id in self.light_ids:
+        # Use Light objects for more reliable control
+        for light_obj in self.light_objects:
             try:
-                # First, ensure the light is turned on (brightness can't be set when light is off)
-                self.bridge.set_light(light_id, {'on': True, 'bri': brightness})
+                # Check if light is reachable
+                if not self._is_light_reachable(light_obj):
+                    print(f"Warning: Light {light_obj.name} is not reachable")
+                    continue
+                
+                # Turn on the light first (if not already on)
+                if not light_obj.on:
+                    light_obj.on = True
+                
+                # Set brightness using the Light object property
+                # This is more reliable than using set_light
+                light_obj.brightness = brightness
+                
             except Exception as e:
-                print(f"Error setting brightness for light {light_id}: {e}")
+                print(f"Exception setting brightness for light {light_obj.name}: {e}")
+                import traceback
+                traceback.print_exc()
         
         self.last_brightness = brightness
         self.last_update_time = current_time
