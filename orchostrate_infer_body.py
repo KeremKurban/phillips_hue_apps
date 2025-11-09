@@ -18,7 +18,7 @@ from mpl_toolkits.mplot3d import Axes3D
 
 BRIDGE_IP = "192.168.1.2"
 CALIBRATION_FILE = "calibration_data.json"
-POINTING_ANGLE_THRESHOLD = 35.0  # degrees - robust but responsive
+POINTING_ANGLE_THRESHOLD = 60.0  # degrees - robust but responsive
 GREEN_HUE = 25500  # Hue value for green
 GREEN_SAT = 254  # Full saturation
 
@@ -589,97 +589,15 @@ class OrchestratorLightController:
                 self.restore_light_state(light_id)
 
 
-def draw_cone_3d(ax, origin: np.ndarray, direction: np.ndarray, 
-                 angle_degrees: float, length: float, 
-                 color: str = 'yellow', alpha: float = 0.3, 
-                 resolution: int = 20):
-    """
-    Draw a 3D cone in matplotlib.
-    
-    Args:
-        ax: 3D axes object
-        origin: Starting point of the cone (3D array)
-        direction: Direction vector (normalized, 3D array)
-        angle_degrees: Cone angle in degrees (half-angle)
-        length: Length of the cone
-        color: Color of the cone
-        alpha: Transparency (0-1)
-        resolution: Number of points around the cone base
-    """
-    # Normalize direction
-    direction = direction / np.linalg.norm(direction)
-    
-    # Calculate cone radius at the end
-    angle_rad = math.radians(angle_degrees)
-    radius = length * math.tan(angle_rad)
-    
-    # Create a coordinate system aligned with the direction
-    # Find a vector perpendicular to direction
-    if abs(direction[2]) < 0.9:
-        perp = np.array([0, 0, 1])
-    else:
-        perp = np.array([1, 0, 0])
-    
-    # Create two perpendicular vectors in the plane perpendicular to direction
-    u = np.cross(direction, perp)
-    u = u / np.linalg.norm(u)
-    v = np.cross(direction, u)
-    v = v / np.linalg.norm(v)
-    
-    # Generate points on the base circle
-    theta = np.linspace(0, 2 * np.pi, resolution)
-    
-    # Create mesh for the cone surface
-    t = np.linspace(0, 1, 15)  # Points along the cone (increased for smoother surface)
-    theta_mesh, t_mesh = np.meshgrid(theta, t)
-    
-    # Calculate points on the cone surface
-    # At each t, the radius is radius * (1 - t)
-    r = radius * (1 - t_mesh)
-    x_circle = r * np.cos(theta_mesh)
-    y_circle = r * np.sin(theta_mesh)
-    
-    # Transform to world coordinates using vectorized operations
-    # Reshape for broadcasting
-    x_circle_flat = x_circle.flatten()
-    y_circle_flat = y_circle.flatten()
-    t_flat = t_mesh.flatten()
-    
-    # Vectorized transformation
-    local_points = (x_circle_flat[:, np.newaxis] * u + 
-                   y_circle_flat[:, np.newaxis] * v + 
-                   t_flat[:, np.newaxis] * length * direction)
-    world_points = origin + local_points
-    
-    # Reshape back to meshgrid shape
-    x_world = world_points[:, 0].reshape(x_circle.shape)
-    y_world = world_points[:, 1].reshape(x_circle.shape)
-    z_world = world_points[:, 2].reshape(x_circle.shape)
-    
-    # Draw the cone surface
-    ax.plot_surface(x_world, y_world, z_world, color=color, alpha=alpha, 
-                   linewidth=0, shade=True, antialiased=True)
-    
-    # Draw the base circle outline for better visibility
-    base_circle_points = radius * (np.cos(theta)[:, np.newaxis] * u + 
-                                   np.sin(theta)[:, np.newaxis] * v) + length * direction
-    base_circle_world = origin + base_circle_points
-    
-    ax.plot(base_circle_world[:, 0], base_circle_world[:, 1], base_circle_world[:, 2], 
-            color=color, linewidth=2.5, alpha=0.9, linestyle='-')
-
-
 class Live3DVisualizer:
     """Live 3D visualization of lights, camera, and user position."""
     
     def __init__(self, light_positions: Dict[str, np.ndarray], light_names: Dict[str, str],
-                 camera_position: np.ndarray, camera_orientation: np.ndarray,
-                 angle_threshold: float = POINTING_ANGLE_THRESHOLD):
+                 camera_position: np.ndarray, camera_orientation: np.ndarray):
         self.light_positions = light_positions
         self.light_names = light_names
         self.camera_position = camera_position
         self.camera_orientation = camera_orientation
-        self.angle_threshold = angle_threshold
         
         self.fig = None
         self.ax = None
@@ -706,29 +624,15 @@ class Live3DVisualizer:
         """Update the 3D plot."""
         self.ax.clear()
         
-        # Calculate cone length based on furthest light distance
-        max_distance = 0
-        if self.current_user_pos is not None:
-            for pos in self.light_positions.values():
-                dist = np.linalg.norm(pos - self.current_user_pos)
-                max_distance = max(max_distance, dist)
-        
-        # Use a reasonable cone length (at least 2 meters, or to furthest light + margin)
-        cone_length = max(2.0, max_distance * 1.2) if max_distance > 0 else 3.0
-        
-        # Plot lights - red if active/intersecting, blue otherwise
+        # Plot lights
         for light_id, pos in self.light_positions.items():
             name = self.light_names.get(light_id, f"Light {light_id}")
             is_active = light_id in self.active_lights
             
-            color = 'red' if is_active else 'blue'
-            size = 350 if is_active else 200
-            edge_color = 'darkred' if is_active else 'darkblue'
-            self.ax.scatter(pos[0], pos[1], pos[2], s=size, c=color, alpha=0.8, 
-                          edgecolors=edge_color, linewidth=2)
-            self.ax.text(pos[0], pos[1], pos[2], f"  {light_id}\n  {name[:15]}", 
-                        fontsize=7, color='white' if is_active else 'black',
-                        bbox=dict(boxstyle='round,pad=0.3', facecolor=color, alpha=0.5))
+            color = 'green' if is_active else 'blue'
+            size = 300 if is_active else 200
+            self.ax.scatter(pos[0], pos[1], pos[2], s=size, c=color, alpha=0.7, edgecolors='black')
+            self.ax.text(pos[0], pos[1], pos[2], f"  {light_id}\n  {name[:15]}", fontsize=7)
         
         # Plot camera position
         self.ax.scatter(self.camera_position[0], self.camera_position[1], self.camera_position[2],
@@ -736,6 +640,7 @@ class Live3DVisualizer:
         
         # Plot camera orientation
         arrow_length = 0.3
+        arrow_end = self.camera_position + self.camera_orientation * arrow_length
         self.ax.quiver(self.camera_position[0], self.camera_position[1], self.camera_position[2],
                       self.camera_orientation[0] * arrow_length,
                       self.camera_orientation[1] * arrow_length,
@@ -745,26 +650,17 @@ class Live3DVisualizer:
         # Plot user position if available
         if self.current_user_pos is not None:
             self.ax.scatter(self.current_user_pos[0], self.current_user_pos[1], self.current_user_pos[2],
-                           s=600, c='orange', marker='o', label='You', edgecolors='black', linewidth=3)
+                           s=500, c='orange', marker='o', label='You', edgecolors='black', linewidth=2)
             
-            # Plot pointing cone if available
+            # Plot pointing vector if available
             if self.current_pointing_vector is not None:
-                # Draw the cone
-                draw_cone_3d(self.ax, 
-                            self.current_user_pos, 
-                            self.current_pointing_vector,
-                            self.angle_threshold,
-                            cone_length,
-                            color='yellow',
-                            alpha=0.25,
-                            resolution=30)
-                
-                # Also draw a line along the center axis for clarity
-                axis_end = self.current_user_pos + self.current_pointing_vector * cone_length
-                self.ax.plot([self.current_user_pos[0], axis_end[0]],
-                            [self.current_user_pos[1], axis_end[1]],
-                            [self.current_user_pos[2], axis_end[2]],
-                            color='yellow', linewidth=3, alpha=0.8, linestyle='--')
+                arrow_length = 1.0
+                arrow_end = self.current_user_pos + self.current_pointing_vector * arrow_length
+                self.ax.quiver(self.current_user_pos[0], self.current_user_pos[1], self.current_user_pos[2],
+                              self.current_pointing_vector[0] * arrow_length,
+                              self.current_pointing_vector[1] * arrow_length,
+                              self.current_pointing_vector[2] * arrow_length,
+                              color='yellow', arrow_length_ratio=0.2, linewidth=3)
         
         self.ax.set_xlabel('X Position', fontsize=12, fontweight='bold')
         self.ax.set_ylabel('Y Position', fontsize=12, fontweight='bold')
@@ -900,86 +796,6 @@ def select_room(rooms):
             return None
 
 
-def get_user_position_manual(light_positions: Dict[str, np.ndarray], 
-                             light_names: Dict[str, str],
-                             camera_position: np.ndarray) -> Optional[np.ndarray]:
-    """
-    Get user position manually with 3D plot reference.
-    
-    Args:
-        light_positions: Dictionary of light positions
-        light_names: Dictionary of light names
-        camera_position: Camera position for reference
-    
-    Returns:
-        User position as numpy array, or None if cancelled
-    """
-    print("\n" + "="*60)
-    print("USER POSITION SETUP")
-    print("="*60)
-    print("Enter your position in the room (X, Y, Z coordinates).")
-    print("You can reference the 3D plot of lights to estimate coordinates.")
-    print("="*60)
-    
-    # Show 3D plot of lights for reference
-    fig = plt.figure(figsize=(12, 10))
-    ax = fig.add_subplot(111, projection='3d')
-    
-    # Plot lights
-    for light_id, pos in light_positions.items():
-        name = light_names.get(light_id, f"Light {light_id}")
-        ax.scatter(pos[0], pos[1], pos[2], s=200, alpha=0.7, c='blue', edgecolors='black')
-        ax.text(pos[0], pos[1], pos[2], f"  {light_id}\n  {name[:15]}", fontsize=7)
-    
-    # Plot camera position
-    ax.scatter(camera_position[0], camera_position[1], camera_position[2],
-              s=400, c='red', marker='^', label='Camera Position', edgecolors='black', linewidth=2)
-    
-    # Set equal aspect ratio
-    all_positions = np.array(list(light_positions.values()))
-    if len(all_positions) > 0:
-        all_positions = np.vstack([all_positions, camera_position.reshape(1, -1)])
-        max_range = np.array([
-            all_positions[:, 0].max() - all_positions[:, 0].min(),
-            all_positions[:, 1].max() - all_positions[:, 1].min(),
-            all_positions[:, 2].max() - all_positions[:, 2].min()
-        ]).max() / 2.0
-        mid = all_positions.mean(axis=0)
-        ax.set_xlim(mid[0] - max_range, mid[0] + max_range)
-        ax.set_ylim(mid[1] - max_range, mid[1] + max_range)
-        ax.set_zlim(mid[2] - max_range, mid[2] + max_range)
-    
-    ax.set_xlabel('X Position', fontsize=12, fontweight='bold')
-    ax.set_ylabel('Y Position', fontsize=12, fontweight='bold')
-    ax.set_zlabel('Z Position', fontsize=12, fontweight='bold')
-    ax.set_title('Light Positions - Reference for Your Position', fontsize=12, fontweight='bold')
-    ax.legend()
-    plt.show(block=False)
-    
-    # Get user position manually
-    while True:
-        try:
-            pos_input = input("\nEnter your position (X Y Z) or 'plot' to see plot again: ").strip()
-            if pos_input.lower() == 'plot':
-                plt.show(block=False)
-                continue
-            
-            coords = [float(x) for x in pos_input.split()]
-            if len(coords) == 3:
-                user_pos = np.array(coords)
-                plt.close(fig)
-                print(f"\n✓ Your position set to: [{user_pos[0]:.2f}, {user_pos[1]:.2f}, {user_pos[2]:.2f}]")
-                return user_pos
-            else:
-                print("Please enter 3 coordinates (X Y Z)")
-        except ValueError:
-            print("Invalid input. Please enter numbers.")
-        except KeyboardInterrupt:
-            plt.close(fig)
-            print("\nCancelled.")
-            return None
-
-
 def load_room_data(filename: str) -> Optional[Dict]:
     """Load room data from JSON file."""
     try:
@@ -1060,17 +876,6 @@ def main():
     # Initialize coordinate mapper
     coord_mapper = CoordinateMapper(calib_manager.camera_position, calib_manager.camera_orientation)
     
-    # Get user position manually
-    print("\n" + "="*60)
-    print("USER POSITION SETUP")
-    print("="*60)
-    user_position = get_user_position_manual(light_positions, light_manager.light_names,
-                                             calib_manager.camera_position)
-    
-    if user_position is None:
-        print("User position setup cancelled.")
-        return
-    
     # Initialize light controller
     light_controller = OrchestratorLightController(bridge, light_manager.light_ids)
     
@@ -1080,8 +885,7 @@ def main():
     
     # Initialize live 3D visualizer
     visualizer = Live3DVisualizer(light_positions, light_manager.light_names,
-                                  calib_manager.camera_position, calib_manager.camera_orientation,
-                                  angle_threshold=POINTING_ANGLE_THRESHOLD)
+                                  calib_manager.camera_position, calib_manager.camera_orientation)
     
     # Initialize camera
     print(f"\nOpening camera...")
@@ -1119,8 +923,7 @@ def main():
     print("Controls:")
     print("  - Point at lights to turn them green")
     print("  - Press 'q' to quit")
-    print("  - Press 'c' to recalibrate camera")
-    print("  - Press 'p' to update your position")
+    print("  - Press 'c' to recalibrate")
     print("=" * 60 + "\n")
     
     visualization_update_interval = 0.1  # Update 3D plot every 100ms
@@ -1140,14 +943,19 @@ def main():
             hand_results = hand_tracker.detect_landmarks(frame)
             pose_results = pose_tracker.detect_landmarks(frame)
             
-            # Use manually entered position (not inferred from pose)
-            user_pos = user_position.copy() if user_position is not None else None
+            user_pos = None
             pointing_vector = None
             active_lights = set()
             
-            # Draw pose landmarks for visualization (but don't use for position calculation)
+            # Get user position from pose
             if pose_results.pose_landmarks:
-                pose_tracker.draw_landmarks(frame, pose_results.pose_landmarks)
+                pose_center = pose_tracker.get_user_center(pose_results.pose_landmarks)
+                if pose_center is not None:
+                    # Scale factor: MediaPipe coordinates are normalized, need to convert to room scale
+                    # This is approximate - you may need to adjust based on your room size
+                    scale = 2.0  # Adjust this based on your room dimensions
+                    user_pos = coord_mapper.get_user_position(pose_center, scale)
+                    pose_tracker.draw_landmarks(frame, pose_results.pose_landmarks)
             
             # Get pointing vector from hand
             if hand_results.multi_hand_landmarks:
@@ -1176,10 +984,8 @@ def main():
             
             # Draw status on frame
             if user_pos is not None:
-                cv2.putText(frame, f"User Pos (Manual): [{user_pos[0]:.2f}, {user_pos[1]:.2f}, {user_pos[2]:.2f}]",
+                cv2.putText(frame, f"User Pos: [{user_pos[0]:.2f}, {user_pos[1]:.2f}, {user_pos[2]:.2f}]",
                            (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
-                cv2.putText(frame, "Pose tracking: Visualization only",
-                           (10, frame.shape[0] - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 0), 1)
             
             if pointing_vector is not None:
                 cv2.putText(frame, f"Pointing: [{pointing_vector[0]:.2f}, {pointing_vector[1]:.2f}, {pointing_vector[2]:.2f}]",
@@ -1202,22 +1008,11 @@ def main():
             if key == ord('q'):
                 break
             elif key == ord('c'):
-                # Recalibrate camera
+                # Recalibrate
                 if calib_manager.calibrate_interactive(light_positions, light_manager.light_names):
                     coord_mapper = CoordinateMapper(calib_manager.camera_position, calib_manager.camera_orientation)
                     visualizer = Live3DVisualizer(light_positions, light_manager.light_names,
-                                                  calib_manager.camera_position, calib_manager.camera_orientation,
-                                                  angle_threshold=POINTING_ANGLE_THRESHOLD)
-            elif key == ord('p'):
-                # Update user position
-                print("\nUpdating user position...")
-                new_pos = get_user_position_manual(light_positions, light_manager.light_names,
-                                                   calib_manager.camera_position)
-                if new_pos is not None:
-                    user_position = new_pos
-                    print(f"✓ Position updated to: [{user_position[0]:.2f}, {user_position[1]:.2f}, {user_position[2]:.2f}]")
-                else:
-                    print("Position update cancelled.")
+                                                  calib_manager.camera_position, calib_manager.camera_orientation)
     
     except KeyboardInterrupt:
         print("\nInterrupted by user")
