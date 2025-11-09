@@ -1,0 +1,1130 @@
+{
+  "room": {
+    "id": "3",
+    "name": "Living  ",
+    "lights": [
+      "9",
+      "10",
+      "6",
+      "7",
+      "8",
+      "4",
+      "1"
+    ],
+    "state": {
+      "all_on": true,
+      "any_on": true
+    },
+    "action": {
+      "on": true,
+      "bri": 128,
+      "hue": 7687,
+      "sat": 199,
+      "effect": "none",
+      "xy": [
+        0.5019,
+        0.4152
+      ],
+      "ct": 447,
+      "alert": "select",
+      "colormode": "ct"
+    },
+    "class": "Free",
+    "positions": {
+      "9": [
+        -0.36,
+        -0.02,
+        1.0
+      ],
+      "10": [
+        0.46,
+        -0.05,
+        1.0
+      ],
+      "6": [
+        0.72,
+        0.93,
+        1.0
+      ],
+      "7": [
+        1.0,
+        0.9,
+        1.0
+      ],
+      "8": [
+        0.22,
+        0.99,
+        -0.38
+      ],
+      "4": [
+        1.0,
+        -0.1,
+        1.0
+      ],
+      "1": [
+        -0.42,
+        -1.0,
+        0.49
+      ]
+    },
+    "raw_data": {
+      "name": "Living  ",
+      "lights": [
+        "9",
+        "10",
+        "6",
+        "7",
+        "8",
+        "4",
+        "1"
+      ],
+      "sensors": [],
+      "type": "Entertainment",
+      "state": {
+        "all_on": true,
+        "any_on": true
+      },
+      "recycle": false,
+      "class": "Free",
+      "stream": {
+        "proxymode": "auto",
+        "proxynode": "/bridge",
+        "active": false,
+        "owner": null
+      },
+      "locations": {
+        "9": [
+          -0.36,
+          -0.02,
+          1.0
+        ],
+        "10": [
+          0.46,
+          -0.05,
+          1.0
+        ],
+        "6": [
+          0.72,
+          0.93,
+          1.0
+        ],
+        "7": [
+          1.0,
+          0.9,
+          1.0
+        ],
+        "8": [
+          0.22,
+          0.99,
+          -0.38
+        ],
+        "4": [
+          1.0,
+          -0.1,
+          1.0
+        ],
+        "1": [
+          -0.42,
+          -1.0,
+          0.49
+        ]
+      },
+      "action": {
+        "on": true,
+        "bri": 128,
+        "hue": 7687,
+        "sat": 199,
+        "effect": "none",
+        "xy": [
+          0.5019,
+          0.4152
+        ],
+        "ct": 447,
+        "alert": "select",
+        "colormode": "ct"
+      }
+    }
+  },
+  "lights": [
+    {
+      "id": "9",
+      "name": "Ceiling 1100 - Desk",
+      "state": {
+        "on": true,
+        "bri": 145,
+        "hue": 7687,
+        "sat": 199,
+        "effect": "none",
+        "xy": [
+          0.5019,
+          0.4152
+        ],
+        "ct": 447,
+        "alert": "select",
+        "colormode": "ct",
+        "mode": "homeautomation",
+        "reachable": true
+      },
+      "config": {
+        "archetype": "sultanbulb",
+        "function": "mixed",
+        "direction": "omnidirectional",
+        "startup": {
+          "mode": "safety",
+          "configured": true
+        }
+      },
+      "capabilities": {
+        "certified": true,
+        "control": {
+          "mindimlevel": 200,
+          "maxlumen": 1055,
+          "colorgamuttype": "C",
+          "colorgamut": [
+            [
+              0.6915,
+              0.3083
+            ],
+            [
+              0.17,
+              0.7
+            ],
+            [
+              0.1532,
+              0.0475
+            ]
+          ],
+          "ct": {
+            "min": 153,
+            "max": 500
+          }
+        },
+        "streaming": {
+          "renderer": true,
+          "proxy": true
+        }
+      },
+      "swupdate": {
+        "state": "noupdates",
+        "lastinstall": "2025-07-17T12:05:32"
+      },
+      "type": "Extended color light",
+      "modelid": "LCA006",
+      "manufacturername": "Signify Netherlands B.V.",
+      "productname": "Hue color lamp",
+      "swversion": "1.122.8",
+      "uniqueid": "00:17:88:01:0b:1d:37:b5-0b",
+      "position": null,
+      "raw_data": {
+        "state": {
+          "on": true,
+          "bri": 145,
+          "hue": 7687,
+          "sat": 199,
+          "effect": "none",
+          "xy": [
+            0.5019,
+            0.4152
+          ],
+          "ct": 447,
+          "alert": "select",
+          "colormode": "ct",
+          "mode": "homeautomation",
+          "reachable": true
+        },
+        "swupdate": {
+          "state": "noupdates",
+          "lastinstall": "2025-07-17T12:05:32"
+        },
+        "type": "Extended color light",
+        "name": "Ceiling 1100 - Desk",
+        "modelid": "LCA006",
+        "manufacturername": "Signify Netherlands B.V.",
+        "productname": "Hue color lamp",
+        "capabilities": {
+          "certified": true,
+          "control": {
+            "mindimlevel": 200,
+            "maxlumen": 1055,
+            "colorgamuttype": "C",
+            "colorgamut": [
+              [
+                0.6915,
+                0.3083
+              ],
+              [
+                0.17,
+                0.7
+              ],
+              [
+                0.1532,
+                0.0475
+              ]
+            ],
+            "ct": {
+              "min": 153,
+              "max": 500
+            }
+          },
+          "streaming": {
+            "renderer": true,
+            "proxy": true
+          }
+        },
+        "config": {
+          "archetype": "sultanbulb",
+          "function": "mixed",
+          "direction": "omnidirectional",
+          "startup": {
+            "mode": "safety",
+            "configured": true
+          }
+        },
+        "uniqueid": "00:17:88:01:0b:1d:37:b5-0b",
+        "swversion": "1.122.8",
+        "swconfigid": "ECCBCB84",
+        "productid": "Philips-LCA006-1-A60HECLv1"
+      }
+    },
+    {
+      "id": "10",
+      "name": "Ceiling 1100 - TV",
+      "state": {
+        "on": true,
+        "bri": 145,
+        "hue": 7687,
+        "sat": 199,
+        "effect": "none",
+        "xy": [
+          0.5019,
+          0.4152
+        ],
+        "ct": 447,
+        "alert": "select",
+        "colormode": "ct",
+        "mode": "homeautomation",
+        "reachable": true
+      },
+      "config": {
+        "archetype": "sultanbulb",
+        "function": "mixed",
+        "direction": "omnidirectional",
+        "startup": {
+          "mode": "safety",
+          "configured": true
+        }
+      },
+      "capabilities": {
+        "certified": true,
+        "control": {
+          "mindimlevel": 200,
+          "maxlumen": 1055,
+          "colorgamuttype": "C",
+          "colorgamut": [
+            [
+              0.6915,
+              0.3083
+            ],
+            [
+              0.17,
+              0.7
+            ],
+            [
+              0.1532,
+              0.0475
+            ]
+          ],
+          "ct": {
+            "min": 153,
+            "max": 500
+          }
+        },
+        "streaming": {
+          "renderer": true,
+          "proxy": true
+        }
+      },
+      "swupdate": {
+        "state": "noupdates",
+        "lastinstall": "2025-07-17T12:05:27"
+      },
+      "type": "Extended color light",
+      "modelid": "LCA006",
+      "manufacturername": "Signify Netherlands B.V.",
+      "productname": "Hue color lamp",
+      "swversion": "1.122.8",
+      "uniqueid": "00:17:88:01:0b:22:1a:40-0b",
+      "position": null,
+      "raw_data": {
+        "state": {
+          "on": true,
+          "bri": 145,
+          "hue": 7687,
+          "sat": 199,
+          "effect": "none",
+          "xy": [
+            0.5019,
+            0.4152
+          ],
+          "ct": 447,
+          "alert": "select",
+          "colormode": "ct",
+          "mode": "homeautomation",
+          "reachable": true
+        },
+        "swupdate": {
+          "state": "noupdates",
+          "lastinstall": "2025-07-17T12:05:27"
+        },
+        "type": "Extended color light",
+        "name": "Ceiling 1100 - TV",
+        "modelid": "LCA006",
+        "manufacturername": "Signify Netherlands B.V.",
+        "productname": "Hue color lamp",
+        "capabilities": {
+          "certified": true,
+          "control": {
+            "mindimlevel": 200,
+            "maxlumen": 1055,
+            "colorgamuttype": "C",
+            "colorgamut": [
+              [
+                0.6915,
+                0.3083
+              ],
+              [
+                0.17,
+                0.7
+              ],
+              [
+                0.1532,
+                0.0475
+              ]
+            ],
+            "ct": {
+              "min": 153,
+              "max": 500
+            }
+          },
+          "streaming": {
+            "renderer": true,
+            "proxy": true
+          }
+        },
+        "config": {
+          "archetype": "sultanbulb",
+          "function": "mixed",
+          "direction": "omnidirectional",
+          "startup": {
+            "mode": "safety",
+            "configured": true
+          }
+        },
+        "uniqueid": "00:17:88:01:0b:22:1a:40-0b",
+        "swversion": "1.122.8",
+        "swconfigid": "ECCBCB84",
+        "productid": "Philips-LCA006-1-A60HECLv1"
+      }
+    },
+    {
+      "id": "6",
+      "name": "Hue Play - Left shelf",
+      "state": {
+        "on": true,
+        "bri": 145,
+        "hue": 7687,
+        "sat": 199,
+        "effect": "none",
+        "xy": [
+          0.5019,
+          0.4152
+        ],
+        "ct": 447,
+        "alert": "select",
+        "colormode": "ct",
+        "mode": "homeautomation",
+        "reachable": true
+      },
+      "config": {
+        "archetype": "hueplay",
+        "function": "decorative",
+        "direction": "upwards",
+        "startup": {
+          "mode": "safety",
+          "configured": true
+        }
+      },
+      "capabilities": {
+        "certified": true,
+        "control": {
+          "mindimlevel": 100,
+          "maxlumen": 560,
+          "colorgamuttype": "C",
+          "colorgamut": [
+            [
+              0.6915,
+              0.3083
+            ],
+            [
+              0.17,
+              0.7
+            ],
+            [
+              0.1532,
+              0.0475
+            ]
+          ],
+          "ct": {
+            "min": 153,
+            "max": 500
+          }
+        },
+        "streaming": {
+          "renderer": true,
+          "proxy": true
+        }
+      },
+      "swupdate": {
+        "state": "noupdates",
+        "lastinstall": "2025-07-17T12:05:49"
+      },
+      "type": "Extended color light",
+      "modelid": "440400982841",
+      "manufacturername": "Signify Netherlands B.V.",
+      "productname": "Hue Play",
+      "swversion": "1.122.8",
+      "uniqueid": "00:17:88:01:09:89:e6:ac-0b",
+      "position": null,
+      "raw_data": {
+        "state": {
+          "on": true,
+          "bri": 145,
+          "hue": 7687,
+          "sat": 199,
+          "effect": "none",
+          "xy": [
+            0.5019,
+            0.4152
+          ],
+          "ct": 447,
+          "alert": "select",
+          "colormode": "ct",
+          "mode": "homeautomation",
+          "reachable": true
+        },
+        "swupdate": {
+          "state": "noupdates",
+          "lastinstall": "2025-07-17T12:05:49"
+        },
+        "type": "Extended color light",
+        "name": "Hue Play - Left shelf",
+        "modelid": "440400982841",
+        "manufacturername": "Signify Netherlands B.V.",
+        "productname": "Hue Play",
+        "capabilities": {
+          "certified": true,
+          "control": {
+            "mindimlevel": 100,
+            "maxlumen": 560,
+            "colorgamuttype": "C",
+            "colorgamut": [
+              [
+                0.6915,
+                0.3083
+              ],
+              [
+                0.17,
+                0.7
+              ],
+              [
+                0.1532,
+                0.0475
+              ]
+            ],
+            "ct": {
+              "min": 153,
+              "max": 500
+            }
+          },
+          "streaming": {
+            "renderer": true,
+            "proxy": true
+          }
+        },
+        "config": {
+          "archetype": "hueplay",
+          "function": "decorative",
+          "direction": "upwards",
+          "startup": {
+            "mode": "safety",
+            "configured": true
+          }
+        },
+        "uniqueid": "00:17:88:01:09:89:e6:ac-0b",
+        "swversion": "1.122.8",
+        "swconfigid": "B7AAA1BA",
+        "productid": "3241-3127-7871_HC04_PSG03"
+      }
+    },
+    {
+      "id": "7",
+      "name": "Hue Play - Right shelf",
+      "state": {
+        "on": true,
+        "bri": 145,
+        "hue": 7687,
+        "sat": 199,
+        "effect": "none",
+        "xy": [
+          0.5019,
+          0.4152
+        ],
+        "ct": 447,
+        "alert": "select",
+        "colormode": "ct",
+        "mode": "homeautomation",
+        "reachable": true
+      },
+      "config": {
+        "archetype": "hueplay",
+        "function": "decorative",
+        "direction": "upwards",
+        "startup": {
+          "mode": "safety",
+          "configured": true
+        }
+      },
+      "capabilities": {
+        "certified": true,
+        "control": {
+          "mindimlevel": 100,
+          "maxlumen": 560,
+          "colorgamuttype": "C",
+          "colorgamut": [
+            [
+              0.6915,
+              0.3083
+            ],
+            [
+              0.17,
+              0.7
+            ],
+            [
+              0.1532,
+              0.0475
+            ]
+          ],
+          "ct": {
+            "min": 153,
+            "max": 500
+          }
+        },
+        "streaming": {
+          "renderer": true,
+          "proxy": true
+        }
+      },
+      "swupdate": {
+        "state": "noupdates",
+        "lastinstall": "2025-07-17T12:05:38"
+      },
+      "type": "Extended color light",
+      "modelid": "440400982841",
+      "manufacturername": "Signify Netherlands B.V.",
+      "productname": "Hue Play",
+      "swversion": "1.122.8",
+      "uniqueid": "00:17:88:01:09:80:57:5c-0b",
+      "position": null,
+      "raw_data": {
+        "state": {
+          "on": true,
+          "bri": 145,
+          "hue": 7687,
+          "sat": 199,
+          "effect": "none",
+          "xy": [
+            0.5019,
+            0.4152
+          ],
+          "ct": 447,
+          "alert": "select",
+          "colormode": "ct",
+          "mode": "homeautomation",
+          "reachable": true
+        },
+        "swupdate": {
+          "state": "noupdates",
+          "lastinstall": "2025-07-17T12:05:38"
+        },
+        "type": "Extended color light",
+        "name": "Hue Play - Right shelf",
+        "modelid": "440400982841",
+        "manufacturername": "Signify Netherlands B.V.",
+        "productname": "Hue Play",
+        "capabilities": {
+          "certified": true,
+          "control": {
+            "mindimlevel": 100,
+            "maxlumen": 560,
+            "colorgamuttype": "C",
+            "colorgamut": [
+              [
+                0.6915,
+                0.3083
+              ],
+              [
+                0.17,
+                0.7
+              ],
+              [
+                0.1532,
+                0.0475
+              ]
+            ],
+            "ct": {
+              "min": 153,
+              "max": 500
+            }
+          },
+          "streaming": {
+            "renderer": true,
+            "proxy": true
+          }
+        },
+        "config": {
+          "archetype": "hueplay",
+          "function": "decorative",
+          "direction": "upwards",
+          "startup": {
+            "mode": "safety",
+            "configured": true
+          }
+        },
+        "uniqueid": "00:17:88:01:09:80:57:5c-0b",
+        "swversion": "1.122.8",
+        "swconfigid": "B7AAA1BA",
+        "productid": "3241-3127-7871_HC04_PSG03"
+      }
+    },
+    {
+      "id": "8",
+      "name": "Hue Play - TV",
+      "state": {
+        "on": true,
+        "bri": 128,
+        "hue": 7687,
+        "sat": 199,
+        "effect": "none",
+        "xy": [
+          0.5019,
+          0.4152
+        ],
+        "ct": 447,
+        "alert": "select",
+        "colormode": "ct",
+        "mode": "homeautomation",
+        "reachable": true
+      },
+      "config": {
+        "archetype": "hueplay",
+        "function": "decorative",
+        "direction": "upwards",
+        "startup": {
+          "mode": "safety",
+          "configured": true
+        }
+      },
+      "capabilities": {
+        "certified": true,
+        "control": {
+          "mindimlevel": 100,
+          "maxlumen": 560,
+          "colorgamuttype": "C",
+          "colorgamut": [
+            [
+              0.6915,
+              0.3083
+            ],
+            [
+              0.17,
+              0.7
+            ],
+            [
+              0.1532,
+              0.0475
+            ]
+          ],
+          "ct": {
+            "min": 153,
+            "max": 500
+          }
+        },
+        "streaming": {
+          "renderer": true,
+          "proxy": true
+        }
+      },
+      "swupdate": {
+        "state": "noupdates",
+        "lastinstall": "2025-07-17T12:05:34"
+      },
+      "type": "Extended color light",
+      "modelid": "440400982841",
+      "manufacturername": "Signify Netherlands B.V.",
+      "productname": "Hue Play",
+      "swversion": "1.122.8",
+      "uniqueid": "00:17:88:01:09:82:ba:5c-0b",
+      "position": null,
+      "raw_data": {
+        "state": {
+          "on": true,
+          "bri": 128,
+          "hue": 7687,
+          "sat": 199,
+          "effect": "none",
+          "xy": [
+            0.5019,
+            0.4152
+          ],
+          "ct": 447,
+          "alert": "select",
+          "colormode": "ct",
+          "mode": "homeautomation",
+          "reachable": true
+        },
+        "swupdate": {
+          "state": "noupdates",
+          "lastinstall": "2025-07-17T12:05:34"
+        },
+        "type": "Extended color light",
+        "name": "Hue Play - TV",
+        "modelid": "440400982841",
+        "manufacturername": "Signify Netherlands B.V.",
+        "productname": "Hue Play",
+        "capabilities": {
+          "certified": true,
+          "control": {
+            "mindimlevel": 100,
+            "maxlumen": 560,
+            "colorgamuttype": "C",
+            "colorgamut": [
+              [
+                0.6915,
+                0.3083
+              ],
+              [
+                0.17,
+                0.7
+              ],
+              [
+                0.1532,
+                0.0475
+              ]
+            ],
+            "ct": {
+              "min": 153,
+              "max": 500
+            }
+          },
+          "streaming": {
+            "renderer": true,
+            "proxy": true
+          }
+        },
+        "config": {
+          "archetype": "hueplay",
+          "function": "decorative",
+          "direction": "upwards",
+          "startup": {
+            "mode": "safety",
+            "configured": true
+          }
+        },
+        "uniqueid": "00:17:88:01:09:82:ba:5c-0b",
+        "swversion": "1.122.8",
+        "swconfigid": "B7AAA1BA",
+        "productid": "3241-3127-7871_HC04_PSG03"
+      }
+    },
+    {
+      "id": "4",
+      "name": "Light strip",
+      "state": {
+        "on": true,
+        "bri": 128,
+        "hue": 7687,
+        "sat": 199,
+        "effect": "none",
+        "xy": [
+          0.5019,
+          0.4152
+        ],
+        "ct": 447,
+        "alert": "select",
+        "colormode": "ct",
+        "mode": "homeautomation",
+        "reachable": true
+      },
+      "config": {
+        "archetype": "huelightstrip",
+        "function": "decorative",
+        "direction": "omnidirectional",
+        "startup": {
+          "mode": "safety",
+          "configured": true
+        }
+      },
+      "capabilities": {
+        "certified": true,
+        "control": {
+          "mindimlevel": 40,
+          "maxlumen": 1600,
+          "colorgamuttype": "C",
+          "colorgamut": [
+            [
+              0.6915,
+              0.3083
+            ],
+            [
+              0.17,
+              0.7
+            ],
+            [
+              0.1532,
+              0.0475
+            ]
+          ],
+          "ct": {
+            "min": 153,
+            "max": 500
+          }
+        },
+        "streaming": {
+          "renderer": true,
+          "proxy": true
+        }
+      },
+      "swupdate": {
+        "state": "noupdates",
+        "lastinstall": "2025-10-06T20:48:33"
+      },
+      "type": "Extended color light",
+      "modelid": "LCL001",
+      "manufacturername": "Signify Netherlands B.V.",
+      "productname": "Hue lightstrip plus",
+      "swversion": "1.122.8",
+      "uniqueid": "00:17:88:01:0b:45:d5:da-0b",
+      "position": null,
+      "raw_data": {
+        "state": {
+          "on": true,
+          "bri": 128,
+          "hue": 7687,
+          "sat": 199,
+          "effect": "none",
+          "xy": [
+            0.5019,
+            0.4152
+          ],
+          "ct": 447,
+          "alert": "select",
+          "colormode": "ct",
+          "mode": "homeautomation",
+          "reachable": true
+        },
+        "swupdate": {
+          "state": "noupdates",
+          "lastinstall": "2025-10-06T20:48:33"
+        },
+        "type": "Extended color light",
+        "name": "Light strip",
+        "modelid": "LCL001",
+        "manufacturername": "Signify Netherlands B.V.",
+        "productname": "Hue lightstrip plus",
+        "capabilities": {
+          "certified": true,
+          "control": {
+            "mindimlevel": 40,
+            "maxlumen": 1600,
+            "colorgamuttype": "C",
+            "colorgamut": [
+              [
+                0.6915,
+                0.3083
+              ],
+              [
+                0.17,
+                0.7
+              ],
+              [
+                0.1532,
+                0.0475
+              ]
+            ],
+            "ct": {
+              "min": 153,
+              "max": 500
+            }
+          },
+          "streaming": {
+            "renderer": true,
+            "proxy": true
+          }
+        },
+        "config": {
+          "archetype": "huelightstrip",
+          "function": "decorative",
+          "direction": "omnidirectional",
+          "startup": {
+            "mode": "safety",
+            "configured": true
+          }
+        },
+        "uniqueid": "00:17:88:01:0b:45:d5:da-0b",
+        "swversion": "1.122.8",
+        "swconfigid": "49730BB6",
+        "productid": "Philips-LCL001-1-LedStripsv4"
+      }
+    },
+    {
+      "id": "1",
+      "name": "Office shelves lamp",
+      "state": {
+        "on": true,
+        "bri": 128,
+        "hue": 7687,
+        "sat": 199,
+        "effect": "none",
+        "xy": [
+          0.5019,
+          0.4152
+        ],
+        "ct": 447,
+        "alert": "select",
+        "colormode": "ct",
+        "mode": "homeautomation",
+        "reachable": true
+      },
+      "config": {
+        "archetype": "classicbulb",
+        "function": "mixed",
+        "direction": "omnidirectional",
+        "startup": {
+          "mode": "safety",
+          "configured": true
+        }
+      },
+      "capabilities": {
+        "certified": true,
+        "control": {
+          "mindimlevel": 200,
+          "maxlumen": 800,
+          "colorgamuttype": "C",
+          "colorgamut": [
+            [
+              0.6915,
+              0.3083
+            ],
+            [
+              0.17,
+              0.7
+            ],
+            [
+              0.1532,
+              0.0475
+            ]
+          ],
+          "ct": {
+            "min": 153,
+            "max": 500
+          }
+        },
+        "streaming": {
+          "renderer": true,
+          "proxy": true
+        }
+      },
+      "swupdate": {
+        "state": "noupdates",
+        "lastinstall": "2025-07-17T12:05:45"
+      },
+      "type": "Extended color light",
+      "modelid": "LCA001",
+      "manufacturername": "Signify Netherlands B.V.",
+      "productname": "Hue color lamp",
+      "swversion": "1.122.8",
+      "uniqueid": "00:17:88:01:09:3e:eb:ba-0b",
+      "position": null,
+      "raw_data": {
+        "state": {
+          "on": true,
+          "bri": 128,
+          "hue": 7687,
+          "sat": 199,
+          "effect": "none",
+          "xy": [
+            0.5019,
+            0.4152
+          ],
+          "ct": 447,
+          "alert": "select",
+          "colormode": "ct",
+          "mode": "homeautomation",
+          "reachable": true
+        },
+        "swupdate": {
+          "state": "noupdates",
+          "lastinstall": "2025-07-17T12:05:45"
+        },
+        "type": "Extended color light",
+        "name": "Office shelves lamp",
+        "modelid": "LCA001",
+        "manufacturername": "Signify Netherlands B.V.",
+        "productname": "Hue color lamp",
+        "capabilities": {
+          "certified": true,
+          "control": {
+            "mindimlevel": 200,
+            "maxlumen": 800,
+            "colorgamuttype": "C",
+            "colorgamut": [
+              [
+                0.6915,
+                0.3083
+              ],
+              [
+                0.17,
+                0.7
+              ],
+              [
+                0.1532,
+                0.0475
+              ]
+            ],
+            "ct": {
+              "min": 153,
+              "max": 500
+            }
+          },
+          "streaming": {
+            "renderer": true,
+            "proxy": true
+          }
+        },
+        "config": {
+          "archetype": "classicbulb",
+          "function": "mixed",
+          "direction": "omnidirectional",
+          "startup": {
+            "mode": "safety",
+            "configured": true
+          }
+        },
+        "uniqueid": "00:17:88:01:09:3e:eb:ba-0b",
+        "swversion": "1.122.8",
+        "swconfigid": "5A9128EA",
+        "productid": "Philips-LCA001-4-A19ECLv6"
+      }
+    }
+  ]
+}
